@@ -1,9 +1,8 @@
 package main
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
+	"github.com/victornascimento22/api-1.0/controllers"
 )
 
 func main() {
@@ -12,11 +11,7 @@ func main() {
 
 	public := r.Group("/api")
 
-	public.POST("/register", func(c *gin.Context) {
-
-		c.JSON(http.StatusOK, controllers.RegisterHandler)
-
-	})
+	public.POST("/register", controllers.RegisterHandler)
 
 	r.Run(":8080")
 
