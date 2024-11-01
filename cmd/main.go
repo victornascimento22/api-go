@@ -1,70 +1,23 @@
-// helloworld
 package main
 
 import (
-	"fmt"
-	"time"
+	"net/http"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/gin-gonic/gin"
 )
-
-var secretKey = []byte("secret-key")
-var tokens []string
-
-type Claims struct {
-	Username string `json:"username"`
-	jwt.RegisteredClaims
-}
 
 func main() {
 
-	// r := gin.Default()
-	// r.POST("/login", gin.BasicAuth(gin.Accounts{
-	// 	"admin": "secret",
-	// }), func(c *gin.Context) {
+	r := gin.Default()
 
-	// 	token, _ := generateJWT()
-	// 	tokens = append(tokens, token)
+	public := r.Group("/api")
 
-	// 	c.JSON(http.StatusOK, gin.H{
-	// 		"token": token,
-	// 	})
+	public.POST("/register", func(c *gin.Context) {
 
-	// })
+		c.JSON(http.StatusOK, controllers.RegisterHandler)
 
-}
-
-func createToken(username string) (string, error) {
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": username,
-		"exp":      time.Now().Add(time.Minute * 5).Unix(),
 	})
 
-	tokenString, err := token.SignedString(secretKey)
+	r.Run(":8080")
 
-	if err != nil {
-
-		return "", err
-
-	}
-	return tokenString, nil
-}
-
-func verifyToken(tokenString string) error {
-
-	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return secretKey, nil
-	})
-
-	if err != nil {
-		return err
-	}
-
-	if !token.Valid {
-
-		return fmt.Errorf("invalid token")
-
-	}
-	return nil
 }
