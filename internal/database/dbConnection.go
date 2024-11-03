@@ -10,7 +10,7 @@ import (
 
 var DB *sql.DB
 
-func ConnectDatabase() error {
+func ConnectDatabase() (*sql.DB, error) {
 
 	var (
 		DbHost     = os.Getenv("DB_HOST")
@@ -23,7 +23,7 @@ func ConnectDatabase() error {
 	err := godotenv.Load(".env")
 
 	if err != nil {
-		return fmt.Errorf("error loading .env file: %v", err)
+		return nil, fmt.Errorf("error loading .env file: %v", err)
 	}
 
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
@@ -33,16 +33,15 @@ func ConnectDatabase() error {
 	db, err := sql.Open("postgres", psqlInfo)
 
 	if err != nil {
-		return fmt.Errorf("error connecting to database: %v", err)
+		return nil, fmt.Errorf("error connecting to database: %v", err)
 	}
 
 	err = db.Ping()
 
 	if err != nil {
-		return fmt.Errorf("error pinging database: %v", err)
+		return nil, fmt.Errorf("error pinging database: %v", err)
 	}
 
-	DB = db
 	fmt.Println("Successfully connected!")
-	return nil
+	return db, nil
 }

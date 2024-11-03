@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/victornascimento22/api-1.0/internal/models"
 )
 
 type RegisterInput struct {
@@ -21,5 +22,19 @@ func RegisterHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": "validated!"})
+	u := models.User{}
+
+	u.Username = input.Username
+	u.Email = input.Email
+	u.Password = input.Password
+
+	err := repository.saveUser(u)
+
+	if err != nil {
+
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "User created successfully"})
 }
