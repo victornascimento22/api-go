@@ -5,6 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/victornascimento22/api-1.0/internal/models"
+	"github.com/victornascimento22/api-1.0/internal/repository"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type RegisterInput struct {
@@ -17,6 +19,8 @@ func RegisterHandler(c *gin.Context) {
 
 	var input RegisterInput
 
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -26,9 +30,9 @@ func RegisterHandler(c *gin.Context) {
 
 	u.Username = input.Username
 	u.Email = input.Email
-	u.Password = input.Password
+	u.Password = string(hashedPassword)
 
-	err := repository.saveUser(u)
+	err = repository.SaveUser(u)
 
 	if err != nil {
 
