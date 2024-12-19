@@ -5,13 +5,14 @@ import (
 	"github.com/victornascimento22/api-1.0/controllers"
 )
 
-func Router1() {
+func Router() {
 	r := gin.Default()
 
 	public := r.Group("/api")
+	{
+		public.POST("/register", controllers.RegisterHandler)
 
-	public.POST("/register", controllers.RegisterHandler)
+	}
 
 	r.Run(":8080")
-
 }
