@@ -33,7 +33,7 @@ func RegisterHandler(c *gin.Context) {
 	u.Email = input.Email
 	u.Password = string(hashedPassword)
 
-	err = repository.SaveUser(u)
+	u, err = repository.SaveUser(u)
 
 	if err != nil {
 

@@ -4,30 +4,25 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/victornascimento22/api-1.0/internal/models"
+	"github.com/victornascimento22/api-1.0/internal/repository"
 )
-
-type User struct {
-	ID       string
-	Name     string
-	Email    string
-	Password string
-}
 
 func TestSaveUser(t *testing.T) {
 	// Arrange (Preparação)
-	user := User{
-		Name:     "João Silva",
+	user := models.User{
+		Username: "João Silva",
 		Email:    "joao@exemplo.com",
 		Password: "senha123",
 	}
 
 	// Act (Ação)
-	result, err := SaveUser(user)
+	savedUser, err := repository.SaveUser(user)
 
 	// Assert (Verificação)
 	assert.NoError(t, err)
-	assert.NotNil(t, result)
-	assert.NotEmpty(t, result.ID)
-	assert.Equal(t, user.Name, result.Name)
-	assert.Equal(t, user.Email, result.Email)
+	assert.NotNil(t, savedUser)
+	assert.NotEmpty(t, savedUser.ID)
+	assert.Equal(t, user.Username, savedUser.Username)
+	assert.Equal(t, user.Email, savedUser.Email)
 }

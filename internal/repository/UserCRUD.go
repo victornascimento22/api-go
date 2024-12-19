@@ -7,14 +7,14 @@ import (
 	"github.com/victornascimento22/api-1.0/internal/models"
 )
 
-func SaveUser(user models.User) error {
+func SaveUser(user models.User) (models.User, error) {
 	if user.Username == "" || user.Email == "" || user.Password == "" {
-		return fmt.Errorf("campos obrigatórios não podem estar vazios")
+		return models.User{}, fmt.Errorf("campos obrigatórios não podem estar vazios")
 	}
 
 	db, err := database.ConnectDatabase()
 	if err != nil {
-		return fmt.Errorf("erro na conexão com o banco de dados: %w", err)
+		return models.User{}, fmt.Errorf("erro na conexão com o banco de dados: %w", err)
 	}
 	defer db.Close()
 
@@ -24,10 +24,10 @@ func SaveUser(user models.User) error {
 	var id int
 	err = db.QueryRow(query, user.Username, user.Email, user.Password).Scan(&id)
 	if err != nil {
-		return fmt.Errorf("erro ao salvar usuário: %w", err)
+		return models.User{}, fmt.Errorf("erro ao salvar usuário: %w", err)
 	}
 
-	return nil
+	return user, nil
 }
 
 func GetUserbyID(id int) (models.User, error) {
